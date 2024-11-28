@@ -1,0 +1,251 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  BASIC
+  ADMIN
+  EDITOR
+}
+
+enum SubscribePlanEnum {
+  BASIC
+  PIECE
+  GRADING
+  ALERT
+}
+
+model User {
+  id               String  @id @default(dbgenerated("concat('usr_', replace(cast(gen_random_uuid() as text), '-', ''))")) @db.Text
+  email            String  @unique
+  userName         String?
+  customerName     String?
+  shopName         String?
+  gstNumber        String?
+  customerPhNumber String?
+
+  role              Role            @default(BASIC)
+  address           Address?
+  usersInDistrictId String?
+  subscribedPlans   SubscribePlan[]
+  createdAt         DateTime        @default(now())
+
+  WeightDatabase        WeightDatabase[]
+  LiterDatabase         LiterDatabase[]
+  PieceCountingDatabase PieceCountingDatabase[]
+  GradeDatabase         GradeDatabase[]
+  ReportDatabase        ReportDatabase[]
+  AlertDatabase         AlertDatabase[]
+
+  GradeSystemTemplate    GradeSystemTemplate[]
+  PieceCountingTemplate  PieceCountingTemplate[]
+  AlertSystemTemplate    AlertSystemTemplate[]
+  ReportDatabaseAverages ReportDatabaseAverages[]
+
+  UsersInDistrict UsersInDistrict? @relation(fields: [usersInDistrictId], references: [id])
+}
+
+model UsersInDistrict {
+  id            String  @id @default(uuid())
+  stateDistrict String?
+  districtCode  String?
+  userCount     Int     @default(0)
+  users         User[]
+}
+
+model SubscribePlan {
+  id          String            @id @default(uuid())
+  enabledPlan SubscribePlanEnum @default(BASIC)
+
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([id, userId])
+  @@index([userId, enabledPlan], name: "subscribePlan_comp_key")
+}
+
+model Address {
+  addressId     String @id @default(uuid())
+  latitude      Float  @db.Real
+  longitude     Float  @db.Real
+  stateDistrict String
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String @unique
+
+  @@index([userId, addressId], name: "address_comp_key")
+}
+
+model ReportDatabase {
+  reportId     String   @id @unique @default(uuid())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  generatedFor DateTime
+
+  savedWeights           WeightDatabase[]
+  savedLiters            LiterDatabase[]
+  savedPieceCounting     PieceCountingDatabase[]
+  savedGrades            GradeDatabase[]
+  savedAlerts            AlertDatabase[]
+  ReportDatabaseAverages ReportDatabaseAverages?
+
+  @@index([userId, reportId, generatedFor(sort: Asc)], name: "reportDatabase_comp_key")
+}
+
+model ReportDatabaseAverages {
+  id           String         @id @unique @default(uuid())
+  report       ReportDatabase @relation(fields: [reportId], references: [reportId])
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  generatedFor DateTime
+  reportId     String         @unique
+
+  savedWeightAverage Decimal @default(0) @db.Decimal(8, 4)
+  savedLiterAverage  Decimal @default(0) @db.Decimal(8, 4)
+  totalRecords       Int     @default(0)
+
+  @@index([userId, id], name: "ReportDatabase_comp_key")
+}
+
+model WeightDatabase {
+  weight   Decimal @db.Decimal(8, 4)
+  weightId String  @id @default(uuid())
+
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  ReportDatabase         ReportDatabase? @relation(fields: [ReportDatabaseReportId], references: [reportId], onDelete: Cascade)
+  ReportDatabaseReportId String?
+
+  @@index([userId, ReportDatabaseReportId, weightId, createdAt(sort: Desc)], name: "weightDatabase_comp_key")
+  @@index([ReportDatabaseReportId])
+}
+
+model LiterDatabase {
+  liter   Decimal @db.Decimal(8, 4)
+  literId String  @id @default(uuid())
+
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  ReportDatabase         ReportDatabase? @relation(fields: [ReportDatabaseReportId], references: [reportId], onDelete: Cascade)
+  ReportDatabaseReportId String?
+
+  @@index([userId, ReportDatabaseReportId, literId, createdAt(sort: Desc)], name: "literDatabase_comp_key")
+  @@index([ReportDatabaseReportId])
+}
+
+model PieceCountingTemplate {
+  pieceId           String    @id @default(uuid())
+  itemName          String    @db.VarChar(255)
+  description       String?   @db.Text
+  singlePieceWeight Decimal   @db.Decimal(8, 4)
+  makePublic        Boolean   @default(false)
+  isDeleted         Boolean   @default(false)
+  deletedAt         DateTime?
+
+  createdBy User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  @@index([userId, pieceId, itemName(sort: Asc)], name: "pieceCountingTemplate_comp_key")
+}
+
+model PieceCountingDatabase {
+  pieceId           String  @id @default(uuid())
+  itemName          String  @db.VarChar(255)
+  singlePieceWeight Decimal @db.Decimal(8, 4)
+  itemsCounted      Decimal @db.Decimal(8, 4)
+
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  ReportDatabase         ReportDatabase? @relation(fields: [ReportDatabaseReportId], references: [reportId], onDelete: Cascade)
+  ReportDatabaseReportId String?
+
+  @@index([userId, ReportDatabaseReportId, pieceId, createdAt(sort: Desc)], name: "pieceCountingDatabase_comp_key")
+  @@index([ReportDatabaseReportId])
+}
+
+model GradeSystemTemplate {
+  gradeId         String  @id @default(uuid())
+  itemName        String
+  gradeName       String
+  gradeUpperLimit Decimal @db.Decimal(8, 4)
+  gradeLowerLimit Decimal @db.Decimal(8, 4)
+  makePublic      Boolean @default(false)
+
+  createdBy User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  @@index([userId, gradeId, itemName(sort: Asc)], name: "gradeSystemTemplate_comp_key")
+}
+
+model GradeDatabase {
+  itemName         String
+  gradeId          String  @id @default(uuid())
+  gradeName        String
+  gradeUpperLimit  Decimal @db.Decimal(8, 4)
+  gradeLowerLimit  Decimal @db.Decimal(8, 4)
+  gradedItemWeight Decimal @db.Decimal(8, 4)
+
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  ReportDatabase         ReportDatabase? @relation(fields: [ReportDatabaseReportId], references: [reportId], onDelete: Cascade)
+  ReportDatabaseReportId String?
+
+  @@index([userId, ReportDatabaseReportId, gradeId, createdAt(sort: Desc)], name: "gradeDatabase_comp_key")
+  @@index([ReportDatabaseReportId])
+}
+
+model AlertSystemTemplate {
+  alertId         String   @id @default(uuid())
+  itemName        String
+  description     String?  @db.Text
+  alertUpperLimit Decimal  @db.Decimal(8, 4)
+  alertLowerLimit Decimal  @db.Decimal(8, 4)
+  makePublic      Boolean  @default(false)
+  priority        Int      @default(1)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  createdBy User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  @@index([userId, alertId, itemName(sort: Asc)], name: "alertSystemTemplate_comp_key")
+}
+
+model AlertDatabase {
+  alertId         String  @id @default(uuid())
+  itemName        String
+  alertUpperLimit Decimal @db.Decimal(8, 4)
+  alertLowerLimit Decimal @db.Decimal(8, 4)
+  savedAt         Decimal @db.Decimal(8, 4)
+
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  ReportDatabase         ReportDatabase? @relation(fields: [ReportDatabaseReportId], references: [reportId], onDelete: Cascade)
+  ReportDatabaseReportId String?
+
+  @@index([userId, ReportDatabaseReportId, alertId, createdAt(sort: Desc)], name: "alertDatabase_comp_key")
+  @@index([ReportDatabaseReportId])
+}

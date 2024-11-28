@@ -10,6 +10,10 @@ import { TRPCReactProvider } from "~/trpc/react";
 
 import "~/app/globals.css";
 
+import { redirect } from "next/navigation";
+
+import { auth } from "@acme/auth";
+
 import { env } from "~/env";
 
 export const metadata: Metadata = {

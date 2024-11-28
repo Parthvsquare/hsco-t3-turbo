@@ -5,7 +5,7 @@ import type {
 } from "next-auth";
 import { skipCSRFCheck } from "@auth/core";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import Discord from "next-auth/providers/discord";
+import GoogleProvider from "next-auth/providers/google";
 
 import { db } from "@acme/db/client";
 import { Account, Session, User } from "@acme/db/schema";
@@ -38,8 +38,20 @@ export const authConfig = {
       }
     : {}),
   secret: env.AUTH_SECRET,
-  providers: [Discord],
+  providers: [
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+  ],
   callbacks: {
+    redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
+    },
     session: (opts) => {
       if (!("user" in opts))
         throw new Error("unreachable with session strategy");
