@@ -1,20 +1,19 @@
 import "@bacons/text-decoder/install";
 
 import { DefaultTheme, PaperProvider } from "react-native-paper";
-import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
 import { TRPCProvider } from "~/utils/api";
 
 import "../styles.css";
 
-import { useUser } from "~/utils/auth";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
+import Navigation from "~/navigation";
 
 // This is the main layout of the app
 // It wraps your pages with the providers they need
 export default function RootLayout() {
-  const { user } = useUser();
-  console.log("🚀 ~ RootLayout ~ user:", user);
   const theme = {
     ...DefaultTheme,
     colors: {
@@ -63,20 +62,16 @@ export default function RootLayout() {
 
   return (
     <TRPCProvider>
-      <PaperProvider theme={theme}>
-        {/*
+      <SafeAreaProvider>
+        <PaperProvider theme={theme}>
+          {/*
           The Stack component displays the current page.
           It also allows you to configure your screens 
           */}
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-        <StatusBar style="dark" />
-      </PaperProvider>
+          <Navigation />
+          <StatusBar style="dark" />
+        </PaperProvider>
+      </SafeAreaProvider>
     </TRPCProvider>
   );
 }

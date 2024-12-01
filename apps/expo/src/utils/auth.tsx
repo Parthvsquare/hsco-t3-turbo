@@ -38,7 +38,7 @@ export const useSignIn = () => {
     if (!success) return;
 
     await utils.invalidate();
-    router.replace("/");
+    router.replace("/connect");
   };
 };
 

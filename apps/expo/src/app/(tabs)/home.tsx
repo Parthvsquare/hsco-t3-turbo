@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Dimensions,
+  Image,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -10,9 +11,9 @@ import { BarChart } from "react-native-chart-kit";
 import { ActivityIndicator, Surface } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Switch } from "react-native-switch";
-import { Image } from "expo-image";
 
 import { useUser } from "~/utils/auth";
+import Icon from "../../../assets/icon.png";
 import DeviceModal from "../../components/DeviceModal";
 import useBLE from "../../hooks/useBLE";
 import useBleStore from "../../store/createDeviceConnectedSlice";
@@ -29,8 +30,8 @@ interface ChartType {
   ];
 }
 
-export const HomeScreen = () => {
-  const { scanForPeripherals, allDevices } = useBLE();
+export default function HomeScreen() {
+  const { scanForPeripherals, allDevices, requestPermissions } = useBLE();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [weight, setWeight] = useState<ChartType>({});
   const [liter, setLiter] = useState<ChartType>({});
@@ -44,14 +45,17 @@ export const HomeScreen = () => {
     setChecked,
   } = useBleStore();
   const [isLoading, setIsLoading] = useState(true);
-  const { user } = useUser();
+  const user = useUser();
   console.log("🚀 ~ HomeScreen ~ user:", user);
 
   const screenWidth = (Dimensions.get("window").width * 80) / 100;
   // const { data: getReport } = api.averageReport.getAllSavedAverages.useQuery();
 
   const scanForDevices = async () => {
-    scanForPeripherals();
+    const isPermissionsEnabled = await requestPermissions();
+    if (isPermissionsEnabled) {
+      scanForPeripherals();
+    }
   };
 
   const hideModal = () => {
@@ -112,11 +116,7 @@ export const HomeScreen = () => {
     <SafeAreaView className="relative h-full w-full">
       <View className="flex flex-row items-start justify-between bg-white p-6 py-3">
         <View className="h-10 w-10">
-          <Image
-            className="h-full w-full"
-            contentFit="contain"
-            source={require("../../assets/icon.png")}
-          />
+          <Image className="h-full w-full" source={Icon} />
         </View>
         <TouchableOpacity onPress={openModal}>
           <DeviceSVG />
@@ -132,7 +132,7 @@ export const HomeScreen = () => {
         />
       </View>
       <View className="mt-5 w-full">
-        <Text className="px-6 text-5xl">Hello, {user?.firstName}</Text>
+        <Text className="px-6 text-5xl">Hello, {user?.name}</Text>
         {device ? (
           <Surface
             style={{
@@ -150,8 +150,8 @@ export const HomeScreen = () => {
             }}
           >
             <View>
-              <Text className="text-2xl">{device?.name}</Text>
-              <Text>{device?.id}</Text>
+              <Text className="text-2xl">{device.name}</Text>
+              <Text>{device.id}</Text>
             </View>
             <Switch
               value={isConnected}
@@ -184,7 +184,7 @@ export const HomeScreen = () => {
           </Surface>
         ) : null}
       </View>
-      <ScrollView className="h-full w-full bg-gray-100">
+      {/* <ScrollView className="h-full w-full bg-gray-100">
         <Surface
           style={{
             borderRadius: 16,
@@ -268,7 +268,7 @@ export const HomeScreen = () => {
             </Text>
           )}
         </Surface>
-      </ScrollView>
+      </ScrollView> */}
     </SafeAreaView>
   );
-};
+}
