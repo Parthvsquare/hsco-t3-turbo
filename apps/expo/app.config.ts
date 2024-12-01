@@ -12,22 +12,23 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   splash: {
     image: "./assets/icon.png",
     resizeMode: "contain",
-    backgroundColor: "#1F104A",
+    backgroundColor: "#ffffff",
   },
   updates: {
     fallbackToCacheTimeout: 0,
   },
   assetBundlePatterns: ["**/*"],
-  ios: {
-    bundleIdentifier: "your.bundle.identifier",
-    supportsTablet: true,
-  },
   android: {
     package: "com.hsco.turbo",
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",
-      backgroundColor: "#1F104A",
+      backgroundColor: "#ffffff",
     },
+    permissions: [
+      "android.permission.BLUETOOTH",
+      "android.permission.BLUETOOTH_ADMIN",
+      "android.permission.BLUETOOTH_CONNECT",
+    ],
   },
   extra: {
     eas: {
@@ -38,5 +39,23 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     tsconfigPaths: true,
     typedRoutes: true,
   },
-  plugins: ["expo-router"],
+  plugins: [
+    "expo-router",
+    [
+      "@config-plugins/react-native-ble-plx",
+      {
+        isBackgroundEnabled: true,
+        modes: ["peripheral", "central"],
+        bluetoothAlwaysPermission:
+          "Allow $(PRODUCT_NAME) to connect to bluetooth devices",
+      },
+    ],
+    [
+      "expo-location",
+      {
+        locationAlwaysAndWhenInUsePermission:
+          "Allow $(PRODUCT_NAME) to use your location.",
+      },
+    ],
+  ],
 });
