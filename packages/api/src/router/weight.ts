@@ -6,7 +6,7 @@ import { createWeight, WeightDatabase } from "@acme/db/schema";
 
 import { protectedProcedure } from "../trpc";
 
-export const postRouter = {
+export const weightRouter = {
   saveWeight: protectedProcedure
     .input(createWeight)
     .mutation(({ ctx, input }) => {

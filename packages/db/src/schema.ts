@@ -207,6 +207,10 @@ export const LiterDatabase = pgTable("literDatabase", (t) => ({
   // ReportDatabaseReportId: t.varchar({ length: 255 }),
 }));
 
+export const createLiter = createInsertSchema(LiterDatabase, {
+  liter: z.number().multipleOf(0.0001),
+}).omit({ user: true, createdAt: true, updatedAt: true });
+
 export const PieceCountingTemplate = pgTable("pieceCountingTemplate", (t) => ({
   pieceId: t.serial().notNull().primaryKey(),
   itemName: t.varchar({ length: 255 }).notNull(),
