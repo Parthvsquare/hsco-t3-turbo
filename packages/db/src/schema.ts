@@ -233,11 +233,24 @@ export const PieceCountingTemplate = pgTable("pieceCountingTemplate", (t) => ({
     .references(() => User.id, { onDelete: "cascade" }),
 }));
 
+export const createPieceTemplateCounter = createInsertSchema(
+  PieceCountingTemplate,
+  {
+    itemName: z.string().max(255),
+    singlePieceWeight: z.number().multipleOf(0.0001),
+    deletedAt: z.date().optional(),
+    makePublic: z.boolean().default(false),
+    createdBy: z.string().optional(),
+    description: z.string().optional(),
+    isDeleted: z.boolean().default(false),
+  },
+).omit({ createdAt: true, updatedAt: true, user: true });
+
 export const PieceCountingDatabase = pgTable("pieceCountingDatabase", (t) => ({
   pieceId: t.serial().notNull().primaryKey(),
   itemName: t.varchar({ length: 255 }).notNull(),
   singlePieceWeight: t.numeric({ precision: 8, scale: 4 }).notNull(),
-  itemsCounted: t.numeric({ precision: 8, scale: 4 }).notNull(),
+  itemsCounted: t.integer(),
   createdAt: t.timestamp().defaultNow().notNull(),
   updatedAt: t
     .timestamp({ mode: "date", withTimezone: true })
@@ -248,6 +261,12 @@ export const PieceCountingDatabase = pgTable("pieceCountingDatabase", (t) => ({
     .references(() => User.id, { onDelete: "cascade" }),
   // ReportDatabaseReportId: t.varchar({ length: 255 }),
 }));
+
+export const createPieceCounter = createInsertSchema(PieceCountingDatabase, {
+  itemName: z.string().max(255),
+  singlePieceWeight: z.number().multipleOf(0.0001),
+  itemsCounted: z.number(),
+}).omit({ createdAt: true, updatedAt: true, user: true });
 
 export const GradeSystemTemplate = pgTable("gradeSystemTemplate", (t) => ({
   gradeTemaplateId: t.serial().notNull().primaryKey(),
