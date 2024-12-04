@@ -15,6 +15,18 @@ export const postRouter = {
         weight: input.weight.toString(),
       });
     }),
+  updateWeight: protectedProcedure
+    .input(
+      z.object({ weightId: z.number().multipleOf(0.0001), weight: z.number() }),
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.db
+        .update(WeightDatabase)
+        .set({
+          weight: input.weight.toString(),
+        })
+        .where(eq(WeightDatabase.weightId, input.weightId));
+    }),
   deleteSavedWeight: protectedProcedure
     .input(z.object({ weightId: z.number().multipleOf(0.0001) }))
     .mutation(({ ctx, input }) => {
