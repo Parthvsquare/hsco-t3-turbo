@@ -1,5 +1,7 @@
 import { relations, sql } from "drizzle-orm";
 import { pgEnum, pgTable, primaryKey } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
 
 // export const Post = pgTable("post", (t) => ({
 //   id: t.uuid().notNull().primaryKey().defaultRandom(),
@@ -100,7 +102,7 @@ export const SessionRelations = relations(Session, ({ one }) => ({
 }));
 
 export const usersInDistrict = pgTable("usersInDistrict", (t) => ({
-  id: t.varchar({ length: 255 }).notNull().primaryKey(),
+  id: t.serial().notNull().primaryKey(),
   stateDistrict: t.varchar({ length: 255 }),
   districtCode: t.varchar({ length: 255 }),
   userCount: t.integer().default(0),
@@ -111,7 +113,7 @@ export const usersInDistrict = pgTable("usersInDistrict", (t) => ({
 }));
 
 export const SubscribePlan = pgTable("subscribePlan", (t) => ({
-  id: t.varchar({ length: 255 }).notNull().primaryKey(),
+  id: t.serial().notNull().primaryKey(),
   enabledPlan: SubscribePlanEnum().default("basic"),
 
   User: t
@@ -121,10 +123,14 @@ export const SubscribePlan = pgTable("subscribePlan", (t) => ({
 }));
 
 export const Address = pgTable("address", (t) => ({
-  addressId: t.varchar({ length: 255 }).notNull().primaryKey(),
+  addressId: t.serial().notNull().primaryKey(),
   latitude: t.real().notNull(),
   longitude: t.real().notNull(),
   stateDistrict: t.varchar({ length: 255 }),
+  createdAt: t.timestamp().defaultNow().notNull(),
+  updatedAt: t
+    .timestamp({ mode: "date", withTimezone: true })
+    .$onUpdateFn(() => sql`now()`),
   user: t
     .uuid()
     .notNull()
@@ -168,86 +174,141 @@ export const ReportDatabaseAverages = pgTable(
 );
 
 export const WeightDatabase = pgTable("weightDatabase", (t) => ({
+  weightId: t.serial().notNull().primaryKey(),
   weight: t.numeric({ precision: 8, scale: 4 }).notNull(),
-  weightId: t.varchar({ length: 255 }).notNull().primaryKey(),
   createdAt: t.timestamp().defaultNow().notNull(),
+  updatedAt: t
+    .timestamp({ mode: "date", withTimezone: true })
+    .$onUpdateFn(() => sql`now()`),
   user: t
     .uuid()
     .notNull()
     .references(() => User.id, { onDelete: "cascade" }),
-  ReportDatabaseReportId: t.varchar({ length: 255 }),
+  // ReportDatabaseReportId: t.varchar({ length: 255 }),
 }));
+
+export const createWeight = createInsertSchema(WeightDatabase, {
+  weight: z.number().multipleOf(0.0001),
+}).omit({ user: true, createdAt: true, updatedAt: true });
+
+// export const updateWeight =
 
 export const LiterDatabase = pgTable("literDatabase", (t) => ({
+  literId: t.serial().notNull().primaryKey(),
   liter: t.numeric({ precision: 8, scale: 4 }).notNull(),
-  literId: t.varchar({ length: 255 }).notNull().primaryKey(),
   createdAt: t.timestamp().defaultNow().notNull(),
+  updatedAt: t
+    .timestamp({ mode: "date", withTimezone: true })
+    .$onUpdateFn(() => sql`now()`),
   user: t
     .uuid()
     .notNull()
     .references(() => User.id, { onDelete: "cascade" }),
-  ReportDatabaseReportId: t.varchar({ length: 255 }),
+  // ReportDatabaseReportId: t.varchar({ length: 255 }),
 }));
 
+export const createLiter = createInsertSchema(LiterDatabase, {
+  liter: z.number().multipleOf(0.0001),
+}).omit({ user: true, createdAt: true, updatedAt: true });
+
 export const PieceCountingTemplate = pgTable("pieceCountingTemplate", (t) => ({
-  pieceId: t.varchar({ length: 255 }).notNull().primaryKey(),
+  pieceId: t.serial().notNull().primaryKey(),
   itemName: t.varchar({ length: 255 }).notNull(),
   description: t.text(),
   singlePieceWeight: t.numeric({ precision: 8, scale: 4 }).notNull(),
   makePublic: t.boolean().default(false),
   isDeleted: t.boolean().default(false),
   deletedAt: t.timestamp(),
+  createdAt: t.timestamp().defaultNow().notNull(),
+  updatedAt: t
+    .timestamp({ mode: "date", withTimezone: true })
+    .$onUpdateFn(() => sql`now()`),
   createdBy: t
     .uuid()
     .notNull()
     .references(() => User.id, { onDelete: "cascade" }),
-  userId: t.varchar({ length: 255 }),
-}));
-
-export const PieceCountingDatabase = pgTable("pieceCountingDatabase", (t) => ({
-  pieceId: t.varchar({ length: 255 }).notNull().primaryKey(),
-  itemName: t.varchar({ length: 255 }).notNull(),
-  singlePieceWeight: t.numeric({ precision: 8, scale: 4 }).notNull(),
-  itemsCounted: t.numeric({ precision: 8, scale: 4 }).notNull(),
-  createdAt: t.timestamp().defaultNow().notNull(),
   user: t
     .uuid()
     .notNull()
     .references(() => User.id, { onDelete: "cascade" }),
-  ReportDatabaseReportId: t.varchar({ length: 255 }),
 }));
 
+export const createPieceTemplateCounter = createInsertSchema(
+  PieceCountingTemplate,
+  {
+    itemName: z.string().max(255),
+    singlePieceWeight: z.number().multipleOf(0.0001),
+    deletedAt: z.date().optional(),
+    makePublic: z.boolean().default(false),
+    createdBy: z.string().optional(),
+    description: z.string().optional(),
+    isDeleted: z.boolean().default(false),
+  },
+).omit({ createdAt: true, updatedAt: true, user: true });
+
+export const PieceCountingDatabase = pgTable("pieceCountingDatabase", (t) => ({
+  pieceId: t.serial().notNull().primaryKey(),
+  itemName: t.varchar({ length: 255 }).notNull(),
+  singlePieceWeight: t.numeric({ precision: 8, scale: 4 }).notNull(),
+  itemsCounted: t.integer(),
+  createdAt: t.timestamp().defaultNow().notNull(),
+  updatedAt: t
+    .timestamp({ mode: "date", withTimezone: true })
+    .$onUpdateFn(() => sql`now()`),
+  user: t
+    .uuid()
+    .notNull()
+    .references(() => User.id, { onDelete: "cascade" }),
+  // ReportDatabaseReportId: t.varchar({ length: 255 }),
+}));
+
+export const createPieceCounter = createInsertSchema(PieceCountingDatabase, {
+  itemName: z.string().max(255),
+  singlePieceWeight: z.number().multipleOf(0.0001),
+  itemsCounted: z.number(),
+}).omit({ createdAt: true, updatedAt: true, user: true });
+
 export const GradeSystemTemplate = pgTable("gradeSystemTemplate", (t) => ({
-  gradeId: t.varchar({ length: 255 }).notNull().primaryKey(),
+  gradeTemaplateId: t.serial().notNull().primaryKey(),
   itemName: t.varchar({ length: 255 }),
   gradeName: t.varchar({ length: 255 }),
   gradeUpperLimit: t.numeric({ precision: 8, scale: 4 }).notNull(),
   gradeLowerLimit: t.numeric({ precision: 8, scale: 4 }).notNull(),
   makePublic: t.boolean().default(false),
+  createdAt: t.timestamp().defaultNow().notNull(),
+  updatedAt: t
+    .timestamp({ mode: "date", withTimezone: true })
+    .$onUpdateFn(() => sql`now()`),
   createdBy: t
     .uuid()
     .notNull()
     .references(() => User.id, { onDelete: "cascade" }),
-  userId: t.varchar({ length: 255 }),
+  user: t
+    .uuid()
+    .notNull()
+    .references(() => User.id, { onDelete: "cascade" }),
 }));
 
 export const GradeDatabase = pgTable("gradeDatabase", (t) => ({
   itemName: t.varchar({ length: 255 }),
-  gradeId: t.varchar({ length: 255 }).notNull().primaryKey(),
+  gradeId: t.serial().notNull().primaryKey(),
   gradeName: t.varchar({ length: 255 }),
   gradeUpperLimit: t.numeric({ precision: 8, scale: 4 }).notNull(),
   gradeLowerLimit: t.numeric({ precision: 8, scale: 4 }).notNull(),
   gradedItemWeight: t.numeric({ precision: 8, scale: 4 }).notNull(),
   createdAt: t.timestamp().defaultNow().notNull(),
+  updatedAt: t
+    .timestamp({ mode: "date", withTimezone: true })
+    .$onUpdateFn(() => sql`now()`),
   user: t
     .uuid()
     .notNull()
     .references(() => User.id, { onDelete: "cascade" }),
-  ReportDatabaseReportId: t.varchar({ length: 255 }),
+  // ReportDatabaseReportId: t.varchar({ length: 255 }),
 }));
 
 export const AlertSystemTemplate = pgTable("alertSystemTemplate", (t) => ({
-  alertId: t.varchar({ length: 255 }).notNull().primaryKey(),
+  alertTemplateId: t.serial().notNull().primaryKey(),
   itemName: t.varchar({ length: 255 }),
   description: t.text(),
   alertUpperLimit: t.numeric({ precision: 8, scale: 4 }).notNull(),
@@ -255,24 +316,32 @@ export const AlertSystemTemplate = pgTable("alertSystemTemplate", (t) => ({
   makePublic: t.boolean().default(false),
   priority: t.integer().default(1),
   createdAt: t.timestamp().defaultNow().notNull(),
-  updatedAt: t.timestamp().defaultNow().notNull(),
+  updatedAt: t
+    .timestamp({ mode: "date", withTimezone: true })
+    .$onUpdateFn(() => sql`now()`),
   createdBy: t
     .uuid()
     .notNull()
     .references(() => User.id, { onDelete: "cascade" }),
-  userId: t.varchar({ length: 255 }),
+  user: t
+    .uuid()
+    .notNull()
+    .references(() => User.id, { onDelete: "cascade" }),
 }));
 
 export const AlertDatabase = pgTable("alertDatabase", (t) => ({
-  alertId: t.varchar({ length: 255 }).notNull().primaryKey(),
+  alertId: t.serial().notNull().primaryKey(),
   itemName: t.varchar({ length: 255 }),
   alertUpperLimit: t.numeric({ precision: 8, scale: 4 }).notNull(),
   alertLowerLimit: t.numeric({ precision: 8, scale: 4 }).notNull(),
   savedAt: t.numeric({ precision: 8, scale: 4 }).notNull(),
   createdAt: t.timestamp().defaultNow().notNull(),
+  updatedAt: t
+    .timestamp({ mode: "date", withTimezone: true })
+    .$onUpdateFn(() => sql`now()`),
   user: t
     .uuid()
     .notNull()
     .references(() => User.id, { onDelete: "cascade" }),
-  ReportDatabaseReportId: t.varchar({ length: 255 }),
+  // ReportDatabaseReportId: t.varchar({ length: 255 }),
 }));
