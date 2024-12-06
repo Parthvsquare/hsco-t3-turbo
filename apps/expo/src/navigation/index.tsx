@@ -4,19 +4,16 @@ import { Stack, useRouter } from "expo-router";
 import { useUser } from "~/utils/auth";
 
 export default function Navigation() {
-  const [loading, setLoading] = useState(true);
-  const user = useUser(); // Ensure the hook resolves the user data
+  const { session, isLoading } = useUser(); // Ensure the hook resolves the user data
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
-      setLoading(false);
+    if (session && !isLoading) {
       router.replace("(tabs)/home");
     } else {
-      setLoading(false);
       router.replace("/");
     }
-  }, [user, router]);
+  }, [session, isLoading]);
 
   return (
     <Stack

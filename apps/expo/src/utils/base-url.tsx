@@ -20,6 +20,6 @@ export const getBaseUrl = () => {
     // return "https://turbo.t3.gg";
     return `https://hsco-t3-turbo.vercel.app`;
   }
-  return `http://${localhost}:3000`;
-  // return `https://hsco-t3-turbo.vercel.app`;
+  // return `http://${localhost}:3000`;
+  return `https://hsco-t3-turbo.vercel.app`;
 };

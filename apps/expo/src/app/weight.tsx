@@ -10,13 +10,13 @@ import {
 import { Surface } from "react-native-paper";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-// import { api } from "../utils/trpc";
 import Meter from "../components/Meter";
 import StyledButton from "../components/StyledButton";
 import ReportTable from "../components/WeightReportTable";
 import useBleStore from "../store/createDeviceConnectedSlice";
-import { ReportSVG } from "../SVG";
+import { ReportSVG, SaveSVG } from "../SVG";
 import { Services, WeightChar } from "../types/constants";
+import { api } from "../utils/api";
 
 export default function Weight() {
   const { weight, initialWeight, setCommand, startMonitoring, stopMonitoring } =
@@ -24,7 +24,7 @@ export default function Weight() {
 
   const [isEnable, setIsEnable] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState(false);
-  // const utils = api.useContext();
+  const utils = api.useUtils();
 
   const handlePress = () => {
     initialWeight();
@@ -35,24 +35,24 @@ export default function Weight() {
     setIsVisible(false);
   };
 
-  // const saveWeight = api.weight.saveWeight.useMutation({
-  //   onSuccess() {
-  //     ToastAndroid.show("Data saved successfully!", ToastAndroid.SHORT);
-  //     utils.weight.getAllSavedWeights.invalidate();
-  //   },
-  //   onError() {
-  //     ToastAndroid.show("Request sent failed!", ToastAndroid.SHORT);
-  //   },
-  // });
+  const saveWeight = api.weight.saveWeight.useMutation({
+    onSuccess() {
+      ToastAndroid.show("Data saved successfully!", ToastAndroid.SHORT);
+      utils.weight.getAllSavedWeight.invalidate();
+    },
+    onError() {
+      ToastAndroid.show("Request sent failed!", ToastAndroid.SHORT);
+    },
+  });
 
-  // const save = () => {
-  //   saveWeight.mutate({ obtainedWeight: Number(weight) });
-  // };
+  const save = () => {
+    saveWeight.mutate({ weight: Number(weight) });
+  };
 
-  // const tare = () => {
-  //   setCommand("T");
-  //   ToastAndroid.show("Tare command send", ToastAndroid.SHORT);
-  // };
+  const tare = () => {
+    setCommand("T");
+    ToastAndroid.show("Tare command send", ToastAndroid.SHORT);
+  };
 
   useEffect(() => {
     if (isEnable) {
@@ -84,7 +84,7 @@ export default function Weight() {
             setIsEnable={setIsEnable}
           />
         </Surface>
-        {/* <View className="mb-5 flex flex-row items-center justify-between">
+        <View className="mb-5 flex flex-row items-center justify-between">
           <StyledButton
             text="Save"
             customStyle="bg-primary-light-gray w-[48%] mt-10"
@@ -97,13 +97,13 @@ export default function Weight() {
             svg={<Text className="text-2xl text-white">T</Text>}
             handlePress={tare}
           />
-        </View> */}
+        </View>
       </ScrollView>
-      {/* <ReportTable
+      <ReportTable
         handleClose={handleClose}
         isVisible={isVisible}
         setIsVisible={setIsVisible}
-      /> */}
+      />
     </SafeAreaView>
   );
 }
