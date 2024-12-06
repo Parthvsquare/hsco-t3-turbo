@@ -23,4 +23,8 @@ export const getBaseUrl = () => {
     );
   }
   return `http://${localhost}:3000`;
+<<<<<<< Updated upstream
+=======
+  // return `https://hsco-t3-turbo.vercel.app`;
+>>>>>>> Stashed changes
 };

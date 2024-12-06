@@ -25,8 +25,8 @@ export const signIn = async () => {
 };
 
 export const useUser = () => {
-  const { data: session } = api.auth.getSession.useQuery();
-  return session?.user ?? null;
+  const { data: session, isLoading } = api.auth.getSession.useQuery();
+  return { session: session?.user ?? null, isLoading };
 };
 
 export const useSignIn = () => {
@@ -38,7 +38,7 @@ export const useSignIn = () => {
     if (!success) return;
 
     await utils.invalidate();
-    router.replace("/");
+    router.replace("/(tabs)/home");
   };
 };
 
