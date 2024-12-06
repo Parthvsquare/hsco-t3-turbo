@@ -26,7 +26,7 @@ export const signIn = async () => {
 
 export const useUser = () => {
   const { data: session, isLoading } = api.auth.getSession.useQuery();
-  return { session: session?.user ?? null, isLoading };
+  return { user: session?.user ?? null, isLoading };
 };
 
 export const useSignIn = () => {

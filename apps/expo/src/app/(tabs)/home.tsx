@@ -45,7 +45,7 @@ export default function HomeScreen() {
     setChecked,
   } = useBleStore();
   const [isLoading, setIsLoading] = useState(true);
-  const user = useUser();
+  const { user } = useUser();
   console.log("🚀 ~ HomeScreen ~ user:", user);
 
   const screenWidth = (Dimensions.get("window").width * 80) / 100;

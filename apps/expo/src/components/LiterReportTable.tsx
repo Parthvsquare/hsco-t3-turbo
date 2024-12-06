@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   Text,
@@ -19,23 +19,22 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 
 import { api } from "../utils/api";
 
-const WeightReportTable = ({ handleClose, isVisible, setIsVisible }: any) => {
+const LiterReportTable = ({ handleClose, isVisible, setIsVisible }: any) => {
   const numberOfItemsPerPage = 10;
   const [id, setId] = useState("");
   const [page, setPage] = useState(0);
   const [dialog, setDialog] = useState(false);
   const utils = api.useUtils();
 
-  const { data, isLoading } = api.weight.getAllSavedWeight.useQuery({
+  const { data, isLoading } = api.liter.getAllSavedLiter.useQuery({
     pageLength: numberOfItemsPerPage,
     page: page + 1,
   });
-  console.log("🚀 ~ WeightReportTable ~ data:", data);
 
-  const mutate = api.weight.deleteSavedWeight.useMutation({
+  const mutate = api.liter.deleteSavedLiter.useMutation({
     onSuccess() {
       ToastAndroid.show("Data deleted successfully!", ToastAndroid.SHORT);
-      utils.weight.getAllSavedWeight.invalidate();
+      utils.liter.getAllSavedLiter.invalidate();
     },
     onError() {
       ToastAndroid.show("Request sent failed!", ToastAndroid.SHORT);
@@ -56,7 +55,7 @@ const WeightReportTable = ({ handleClose, isVisible, setIsVisible }: any) => {
   };
 
   const deleteSaved = () => {
-    mutate.mutate({ weightId: id });
+    mutate.mutate({ literId: id });
     setDialog(false);
     setId("");
   };
@@ -77,7 +76,7 @@ const WeightReportTable = ({ handleClose, isVisible, setIsVisible }: any) => {
             <AntDesign name="close" size={24} color="black" />
           </TouchableOpacity>
         </View>
-        <Text className="text-5xl">Weight Report</Text>
+        <Text className="mb-5 text-5xl">Liter Report</Text>
         <DataTable>
           <DataTable.Header>
             <DataTable.Title
@@ -99,12 +98,12 @@ const WeightReportTable = ({ handleClose, isVisible, setIsVisible }: any) => {
             </View>
           ) : (
             data.map((item) => (
-              <DataTable.Row key={item.weightId}>
+              <DataTable.Row key={item.literId}>
                 <DataTable.Cell
                   textStyle={{ fontSize: 16 }}
                   style={{ flex: 0.5 }}
                 >
-                  {item.weight}
+                  {item.liter}
                 </DataTable.Cell>
                 <DataTable.Cell
                   textStyle={{ fontSize: 16 }}
@@ -116,18 +115,18 @@ const WeightReportTable = ({ handleClose, isVisible, setIsVisible }: any) => {
                   style={{ flex: 0.2, justifyContent: "flex-end" }}
                 >
                   <Menu
-                    visible={id === item.weightId && !dialog}
+                    visible={id === item.literId && !dialog}
                     onDismiss={close}
                     anchor={
                       <IconButton
                         icon="dots-vertical"
-                        onPress={() => openMenu(item.weightId)}
+                        onPress={() => openMenu(item.literId)}
                       />
                     }
                   >
                     <Menu.Item
                       onPress={() => {
-                        setId(item.weightId);
+                        setId(item.literId);
                         setDialog(true);
                       }}
                       title="Delete"
@@ -166,4 +165,4 @@ const WeightReportTable = ({ handleClose, isVisible, setIsVisible }: any) => {
   );
 };
 
-export default WeightReportTable;
+export default LiterReportTable;

@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 import { Surface } from "react-native-paper";
+import { useRouter } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 import Meter from "../components/Meter";
@@ -25,10 +26,11 @@ export default function Weight() {
   const [isEnable, setIsEnable] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState(false);
   const utils = api.useUtils();
+  const router = useRouter();
 
   const handlePress = () => {
     initialWeight();
-    // navigation.goBack();
+    router.back();
   };
 
   const handleClose = () => {

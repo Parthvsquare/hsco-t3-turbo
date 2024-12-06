@@ -32,16 +32,16 @@ const Mode = () => {
               currentMode="00"
               // disabled={data?.filter((i) => i.enabledPlan === "BASIC")}
             />
-            <ModeBox
+            {/* <ModeBox
               screen="Alarm"
               icon={<AlarmSVG />}
               name="Alarm"
               // currentMode="00"
               currentMode="01"
               // disabled={data?.filter((i) => i.enabledPlan === "ALERT")}
-            />
+            /> */}
             <ModeBox
-              screen="Liter"
+              screen="liter"
               icon={<LiterSVG />}
               name="Liter"
               margin={20}
@@ -49,7 +49,7 @@ const Mode = () => {
               currentMode="02"
               // disabled={data?.filter((i) => i.enabledPlan === "BASIC")}
             />
-            <ModeBox
+            {/* <ModeBox
               screen="Piece"
               icon={<PieceSVG />}
               name="Piece Counting"
@@ -64,7 +64,7 @@ const Mode = () => {
               margin={20}
               currentMode="04"
               // disabled={data?.filter((i) => i.enabledPlan === "GRADING")}
-            />
+            /> */}
           </View>
         </ScrollView>
         {/* )} */}

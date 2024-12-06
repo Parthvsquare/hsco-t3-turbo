@@ -24,7 +24,7 @@ const ModeBox = ({
         initialWeight();
         getMaxWeight();
       }}
-      href="/weight"
+      href={`/${screen}`}
       disabled={!isDisabled}
     >
       <Surface style={{ borderRadius: 16 }}>
