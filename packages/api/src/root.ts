@@ -16,7 +16,7 @@ export const appRouter = createTRPCRouter({
   pieceCounting: pieceCountingRouter,
   pieceCountingTemplate: pieceCountingTemplateRouter,
   alert: alarmRouter,
-  alterTemplate: alarmTemplateRouter,
+  alertTemplate: alarmTemplateRouter,
 });
 
 // export type definition of API
