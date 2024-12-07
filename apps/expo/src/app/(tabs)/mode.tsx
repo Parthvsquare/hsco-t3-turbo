@@ -40,20 +40,21 @@ const Mode = () => {
               // disabled={data?.filter((i) => i.enabledPlan === "BASIC")}
             />
             <ModeBox
+              screen="alarm"
+              icon={<AlarmSVG />}
+              name="Alarm"
+              margin={20}
+              // currentMode="00"
+              currentMode="01"
+              // disabled={data?.filter((i) => i.enabledPlan === "ALERT")}
+            />
+            <ModeBox
               screen="piece"
               icon={<PieceSVG />}
               name="Piece Counting"
               // currentMode="02"
               currentMode="03"
               // disabled={data?.filter((i) => i.enabledPlan === "PIECE")}
-            />
-            <ModeBox
-              screen="alarm"
-              icon={<AlarmSVG />}
-              name="Alarm"
-              // currentMode="00"
-              currentMode="01"
-              // disabled={data?.filter((i) => i.enabledPlan === "ALERT")}
             />
             {/* <ModeBox
               screen="Grading Template"
