@@ -2,12 +2,7 @@ import type { TRPCRouterRecord } from "@trpc/server";
 import { z } from "zod";
 
 import { and, desc, eq } from "@acme/db";
-import {
-  AlertSystemTemplate,
-  createAlertTemplate,
-  createWeight,
-  WeightDatabase,
-} from "@acme/db/schema";
+import { AlertSystemTemplate, createAlertTemplate } from "@acme/db/schema";
 
 import { protectedProcedure } from "../trpc";
 
@@ -16,16 +11,6 @@ export const alarmTemplateRouter = {
   saveAlarmTemplate: protectedProcedure
     .input(createAlertTemplate)
     .mutation(({ ctx, input }) => {
-      // return ctx.prisma.alertSystemTemplate.create({
-      //   data: {
-      //     itemName: input.itemName,
-      //     userId: ctx.auth.userId,
-      //     alertLowerLimit: input.alertLowerLimit,
-      //     alertUpperLimit: input.alertUpperLimit,
-      //     makePublic: input.makePublic ?? false,
-      //   },
-      // });
-
       if (input.createdBy == "" || input.createdBy == null) {
         input.createdBy = ctx.session.user.id;
       }
@@ -41,10 +26,6 @@ export const alarmTemplateRouter = {
   deleteSavedAlarmTemplate: protectedProcedure
     .input(z.object({ alertTemplateId: z.number().multipleOf(0.0001) }))
     .mutation(({ ctx, input }) => {
-      // const data = await ctx.prisma.alertSystemTemplate.delete({
-      //   where: { alertId: input.alertId },
-      // });
-      // return { data: data };
       return ctx.db
         .delete(AlertSystemTemplate)
         .where(

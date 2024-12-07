@@ -12,7 +12,7 @@ export const weightRouter = {
     .mutation(({ ctx, input }) => {
       return ctx.db.insert(WeightDatabase).values({
         user: ctx.session.user.id,
-        weight: input.weight.toString(),
+        weight: input.weight.toPrecision(4),
       });
     }),
   updateWeight: protectedProcedure
