@@ -14,7 +14,6 @@ declare module "@auth/core" {
     user: {
       id: string;
       // ...other properties
-      // role: Role;
       email: string;
     } & DefaultSession["user"];
   }
