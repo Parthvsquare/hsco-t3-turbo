@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Linking, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRouter } from "expo-router";
@@ -54,7 +54,7 @@ export default function ConnectScreen() {
             <Button
               mode="elevated"
               buttonColor="#EFA63E"
-              onPress={() => navigation.navigate("(tabs)/home")}
+              onPress={() => router.navigate("(tabs)/home")}
             >
               Skip
             </Button>

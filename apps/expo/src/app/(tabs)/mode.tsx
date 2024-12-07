@@ -32,6 +32,21 @@ const Mode = () => {
               currentMode="00"
               // disabled={data?.filter((i) => i.enabledPlan === "BASIC")}
             />
+            <ModeBox
+              screen="liter"
+              icon={<LiterSVG />}
+              name="Liter"
+              currentMode="02"
+              // disabled={data?.filter((i) => i.enabledPlan === "BASIC")}
+            />
+            <ModeBox
+              screen="Piece"
+              icon={<PieceSVG />}
+              name="Piece Counting"
+              // currentMode="02"
+              currentMode="03"
+              // disabled={data?.filter((i) => i.enabledPlan === "PIECE")}
+            />
             {/* <ModeBox
               screen="Alarm"
               icon={<AlarmSVG />}
@@ -40,24 +55,7 @@ const Mode = () => {
               currentMode="01"
               // disabled={data?.filter((i) => i.enabledPlan === "ALERT")}
             /> */}
-            <ModeBox
-              screen="liter"
-              icon={<LiterSVG />}
-              name="Liter"
-              margin={20}
-              // currentMode="01"
-              currentMode="02"
-              // disabled={data?.filter((i) => i.enabledPlan === "BASIC")}
-            />
             {/* <ModeBox
-              screen="Piece"
-              icon={<PieceSVG />}
-              name="Piece Counting"
-              // currentMode="02"
-              currentMode="03"
-              // disabled={data?.filter((i) => i.enabledPlan === "PIECE")}
-            />
-            <ModeBox
               screen="Grading Template"
               icon={<GradingSVG />}
               name="Grading"
