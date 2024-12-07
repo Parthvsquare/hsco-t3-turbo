@@ -1,6 +1,7 @@
 import { authRouter } from "./router/auth";
 import { literRouter } from "./router/liter";
 import { pieceCountingRouter } from "./router/pieceCounting";
+import { pieceCountingTemplateRouter } from "./router/pieceTemplate";
 import { postRouter } from "./router/post";
 import { weightRouter } from "./router/weight";
 import { createTRPCRouter } from "./trpc";
@@ -11,6 +12,7 @@ export const appRouter = createTRPCRouter({
   weight: weightRouter,
   liter: literRouter,
   pieceCounting: pieceCountingRouter,
+  pieceCountingTemplate: pieceCountingTemplateRouter,
 });
 
 // export type definition of API

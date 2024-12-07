@@ -78,7 +78,10 @@ export default function Weight() {
         <Text className="mb-8 text-5xl">Weight</Text>
       </View>
       <ScrollView>
-        <Surface className="bg-primary-light-gray flex items-center justify-center rounded-2xl">
+        <Surface
+          style={{ borderRadius: 16 }}
+          className="bg-primary-light-gray flex items-center justify-center rounded-2xl"
+        >
           <Meter
             value={Number(weight)}
             units="kg"

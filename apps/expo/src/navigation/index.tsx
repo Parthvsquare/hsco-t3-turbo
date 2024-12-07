@@ -13,6 +13,8 @@ export default function Navigation() {
       <Stack.Screen name="connect" />
       <Stack.Screen name="weight" />
       <Stack.Screen name="liter" />
+      <Stack.Screen name="piece" />
+      <Stack.Screen name="count" />
     </Stack>
   );
 }

@@ -19,6 +19,7 @@ const StyledButton = ({
   return (
     <Surface
       mode="elevated"
+      style={{ borderRadius: 12 }}
       className={`rounded-xl ${customStyle ? customStyle : ""}`}
     >
       <TouchableOpacity

@@ -40,7 +40,7 @@ const Mode = () => {
               // disabled={data?.filter((i) => i.enabledPlan === "BASIC")}
             />
             <ModeBox
-              screen="Piece"
+              screen="piece"
               icon={<PieceSVG />}
               name="Piece Counting"
               // currentMode="02"

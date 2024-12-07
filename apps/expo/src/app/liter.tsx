@@ -116,7 +116,10 @@ const Liter = () => {
         <Text className="mb-8 text-5xl">Liter</Text>
       </View>
       <ScrollView>
-        <Surface className="bg-primary-light-gray rounded-2xl">
+        <Surface
+          style={{ borderRadius: 16 }}
+          className="bg-primary-light-gray rounded-2xl"
+        >
           <Meter
             value={Number(weight)}
             units="L"
