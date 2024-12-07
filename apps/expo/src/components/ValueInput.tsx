@@ -1,5 +1,6 @@
-import React, { Dispatch } from "react";
-import { View, Text, TextInput } from "react-native";
+import type { Dispatch } from "react";
+import React from "react";
+import { Text, TextInput, View } from "react-native";
 
 interface ValueInputProps {
   value: string;
@@ -21,6 +22,13 @@ const ValueInput = ({
       <Text className="mb-2">{text}</Text>
       <TextInput
         className="bg-primary-light-gray block w-full rounded-2xl px-4 py-2"
+        style={{
+          backgroundColor: "#E5E5E5",
+          width: "100%",
+          borderRadius: 16,
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+        }}
         autoCapitalize="none"
         value={value}
         textContentType="telephoneNumber"

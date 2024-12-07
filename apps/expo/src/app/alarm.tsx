@@ -175,9 +175,16 @@ const Weight = () => {
         visible={isVisible}
       >
         <SafeAreaView className="bg-primary-black-overlay flex h-full items-center justify-center">
-          <View className="h-auto w-80 -translate-x-1/2 rounded-2xl bg-white p-5">
+          <View className="h-auto w-80 rounded-2xl bg-white p-5">
             <TextInput
               className="bg-primary-light-gray my-5 block w-full rounded-2xl px-4 py-2"
+              style={{
+                backgroundColor: "#E5E5E5",
+                width: "100%",
+                borderRadius: 16,
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+              }}
               autoCapitalize="none"
               value={item}
               textContentType="username"
@@ -209,6 +216,9 @@ const Weight = () => {
               <TouchableOpacity
                 onPress={handleClose}
                 className="bg-alarm-red mb-5 basis-[45%] rounded-2xl py-4"
+                style={{
+                  backgroundColor: "#EB5757",
+                }}
               >
                 <Text className="text-center text-white">Close</Text>
               </TouchableOpacity>
