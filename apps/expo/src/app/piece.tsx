@@ -36,16 +36,17 @@ const Piece = () => {
   const router = useRouter();
 
   const { data, isLoading } =
-    api.pieceCounting.getAllMyPieceCountTemplate.useQuery({
+    api.pieceCountingTemplate.getAllMyPieceCountTemplate.useQuery({
       pageLength: numberOfItemsPerPage,
       page: page + 1,
     });
+  console.log("🚀 ~ Piece ~ data:", data);
 
   const deleteTemplate =
-    api.pieceCounting.deleteMyPieceCountTemplate.useMutation({
+    api.pieceCountingTemplate.deleteMyPieceCountTemplate.useMutation({
       onSuccess() {
         ToastAndroid.show("Template deleted successfully!", ToastAndroid.SHORT);
-        utils.pieceCounting.getAllMyPieceCountTemplate.invalidate();
+        utils.pieceCountingTemplate.getAllMyPieceCountTemplate.invalidate();
       },
       onError() {
         ToastAndroid.show("Error could not delete!", ToastAndroid.SHORT);
@@ -143,7 +144,7 @@ const Piece = () => {
               <ActivityIndicator animating={true} color="black" />
             </View>
           ) : (
-            data?.data?.map((item) => (
+            data?.data.map((item) => (
               <DataTable.Row
                 onPress={() =>
                   handleSelect(item.itemName, item.singlePieceWeight)

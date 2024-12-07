@@ -40,15 +40,16 @@ const PieceCreate = ({
   const utils = api.useUtils();
   const router = useRouter();
 
-  const setTemplate = api.pieceCounting.savePieceCountTemplate.useMutation({
-    onSuccess() {
-      ToastAndroid.show("Template saved successfully!", ToastAndroid.SHORT);
-      utils.pieceCounting.getAllMyPieceCountTemplate.invalidate();
-    },
-    onError() {
-      ToastAndroid.show("Request sent failed!", ToastAndroid.SHORT);
-    },
-  });
+  const setTemplate =
+    api.pieceCountingTemplate.savePieceCountTemplate.useMutation({
+      onSuccess() {
+        ToastAndroid.show("Template saved successfully!", ToastAndroid.SHORT);
+        utils.pieceCountingTemplate.getAllMyPieceCountTemplate.invalidate();
+      },
+      onError() {
+        ToastAndroid.show("Request sent failed!", ToastAndroid.SHORT);
+      },
+    });
 
   const tare = () => {
     setCommand("T");
@@ -101,14 +102,21 @@ const PieceCreate = ({
           <TextInput
             autoCapitalize="none"
             value={templateName}
-            className="bg-primary-light-gray my-5 block w-full"
+            // className="bg-primary-light-gray my-5 block w-full"
+            style={{
+              backgroundColor: "#E5E5E5",
+              width: "100%",
+              // borderRadius: 16,
+              paddingHorizontal: 16,
+              // paddingVertical: 20,
+            }}
             textContentType="username"
             label="Template Name"
             onChangeText={(val) => setTemplateName(val)}
             enablesReturnKeyAutomatically
             selectTextOnFocus
           />
-          <View className="bg-primary-light-gray rounded-2xl">
+          <View className="bg-primary-light-gray mt-5 rounded-2xl">
             <Meter
               value={Number(weight)}
               units="kg"
