@@ -47,14 +47,14 @@ const Mode = () => {
               currentMode="03"
               // disabled={data?.filter((i) => i.enabledPlan === "PIECE")}
             />
-            {/* <ModeBox
-              screen="Alarm"
+            <ModeBox
+              screen="alarm"
               icon={<AlarmSVG />}
               name="Alarm"
               // currentMode="00"
               currentMode="01"
               // disabled={data?.filter((i) => i.enabledPlan === "ALERT")}
-            /> */}
+            />
             {/* <ModeBox
               screen="Grading Template"
               icon={<GradingSVG />}

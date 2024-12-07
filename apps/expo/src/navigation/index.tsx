@@ -15,6 +15,7 @@ export default function Navigation() {
       <Stack.Screen name="liter" />
       <Stack.Screen name="piece" />
       <Stack.Screen name="count" />
+      <Stack.Screen name="alarm" />
     </Stack>
   );
 }
