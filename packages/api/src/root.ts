@@ -15,7 +15,7 @@ export const appRouter = createTRPCRouter({
   liter: literRouter,
   pieceCounting: pieceCountingRouter,
   pieceCountingTemplate: pieceCountingTemplateRouter,
-  alert: alarmRouter,
+  alarm: alarmRouter,
   alertTemplate: alarmTemplateRouter,
 });
 
