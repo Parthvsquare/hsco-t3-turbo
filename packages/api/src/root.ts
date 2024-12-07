@@ -1,3 +1,4 @@
+import { alarmRouter } from "./router/alarm";
 import { authRouter } from "./router/auth";
 import { literRouter } from "./router/liter";
 import { pieceCountingRouter } from "./router/pieceCounting";
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
   liter: literRouter,
   pieceCounting: pieceCountingRouter,
   pieceCountingTemplate: pieceCountingTemplateRouter,
+  alert: alarmRouter,
 });
 
 // export type definition of API

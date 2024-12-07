@@ -329,12 +329,19 @@ export const AlertSystemTemplate = pgTable("alertSystemTemplate", (t) => ({
     .references(() => User.id, { onDelete: "cascade" }),
 }));
 
+export const createAlertTemplate = createInsertSchema(AlertSystemTemplate, {
+  itemName: z.string(),
+  alertLowerLimit: z.number(),
+  alertUpperLimit: z.number(),
+  makePublic: z.boolean().optional(),
+  createdBy: z.string(),
+}).omit({ user: true, createdAt: true, updatedAt: true });
+
 export const AlertDatabase = pgTable("alertDatabase", (t) => ({
   alertId: t.serial().notNull().primaryKey(),
   itemName: t.varchar({ length: 255 }),
   alertUpperLimit: t.numeric({ precision: 8, scale: 4 }).notNull(),
   alertLowerLimit: t.numeric({ precision: 8, scale: 4 }).notNull(),
-  savedAt: t.numeric({ precision: 8, scale: 4 }).notNull(),
   createdAt: t.timestamp().defaultNow().notNull(),
   updatedAt: t
     .timestamp({ mode: "date", withTimezone: true })
@@ -345,3 +352,9 @@ export const AlertDatabase = pgTable("alertDatabase", (t) => ({
     .references(() => User.id, { onDelete: "cascade" }),
   // ReportDatabaseReportId: t.varchar({ length: 255 }),
 }));
+
+export const createAlert = createInsertSchema(AlertDatabase, {
+  itemName: z.string(),
+  alertUpperLimit: z.number(),
+  alertLowerLimit: z.number(),
+}).omit({ user: true, createdAt: true, updatedAt: true });
