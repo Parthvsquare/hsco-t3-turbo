@@ -70,7 +70,7 @@ const PieceCreate = ({
       itemName: templateName,
       singlePieceWeight: Number(unit),
     });
-    router.navigate("count");
+    router.navigate("/count");
     initialWeight();
   };
 
