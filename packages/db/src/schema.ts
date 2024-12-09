@@ -22,11 +22,13 @@ import { z } from "zod";
 //   updatedAt: true,
 // });
 export const Role = pgEnum("role", ["basic", "admin", "editor"]);
+
 export const SubscribePlanEnum = pgEnum("subscribe_plan_enum", [
   "basic",
   "piece",
   "grading",
   "alert",
+  "all",
 ]);
 
 export const User = pgTable("user", (t) => ({

@@ -47,10 +47,10 @@
   },
   "globalEnv": [
     "POSTGRES_URL",
-    "AUTH_DISCORD_ID",
     "GOOGLE_CLIENT_ID",
     "GOOGLE_CLIENT_SECRET",
     "AUTH_REDIRECT_PROXY_URL",
+    "ADMIN_USER",
     "AUTH_SECRET",
     "PORT"
   ],
