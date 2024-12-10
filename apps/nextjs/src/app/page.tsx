@@ -2,7 +2,6 @@
 // import { useRouter } from "next/navigation";
 
 import { HydrateClient } from "~/trpc/server";
-import LayoutComponent from "./_components/layout_component";
 
 // import {
 //   CreatePostForm,
@@ -28,9 +27,7 @@ export default function HomePage() {
 
   return (
     <HydrateClient>
-      <main className="container h-screen py-16">
-        <LayoutComponent />
-      </main>
+      <main className="container h-screen py-16"></main>
     </HydrateClient>
   );
 }

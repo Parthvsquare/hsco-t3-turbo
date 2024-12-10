@@ -17,7 +17,7 @@ const { Text } = Typography;
 
 const { Header, Sider, Content } = Layout;
 
-function LayoutComponent() {
+function LayoutComponent({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
 
@@ -105,6 +105,7 @@ function LayoutComponent() {
               ) : (
                 {children}
               )} */}
+          {children}
         </Content>
       </Layout>
     </Layout>
