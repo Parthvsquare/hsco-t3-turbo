@@ -1,12 +1,31 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { and, eq } from "@acme/db";
+import { and, desc, eq } from "@acme/db";
 import { GradeDatabase } from "@acme/db/schema";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const gradeRouter = createTRPCRouter({
+  getAllGrades: protectedProcedure
+    .input(z.object({ pageLength: z.number(), page: z.number().default(1) }))
+    .query(async ({ ctx, input }) => {
+      const data = await ctx.db.query.GradeDatabase.findMany({
+        orderBy: desc(GradeDatabase.createdAt),
+        limit: input.pageLength,
+        offset: (input.page - 1) * input.pageLength,
+        where(fields, operators) {
+          return operators.eq(fields.user, ctx.session.user.id);
+        },
+      });
+
+      const totalCount = (
+        await ctx.db
+          .select()
+          .from(GradeDatabase)
+          .where(and(eq(GradeDatabase.user, ctx.session.user.id)))
+      ).length;
+      return { data, totalCount };
+    }),
   saveGrade: protectedProcedure
     .input(
       z.object({
@@ -27,7 +46,7 @@ export const gradeRouter = createTRPCRouter({
         user: ctx.session.user.id,
       });
     }),
-  updateSavedGrading: protectedProcedure
+  updateSavedGrade: protectedProcedure
     .input(
       z.object({
         gradeId: z.number(),
