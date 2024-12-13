@@ -56,14 +56,14 @@ const Mode = () => {
               currentMode="03"
               // disabled={data?.filter((i) => i.enabledPlan === "PIECE")}
             />
-            {/* <ModeBox
-              screen="Grading Template"
+            <ModeBox
+              screen="gtemplate"
               icon={<GradingSVG />}
               name="Grading"
               margin={20}
               currentMode="04"
               // disabled={data?.filter((i) => i.enabledPlan === "GRADING")}
-            /> */}
+            />
           </View>
         </ScrollView>
         {/* )} */}

@@ -16,6 +16,8 @@ export default function Navigation() {
       <Stack.Screen name="piece" />
       <Stack.Screen name="count" />
       <Stack.Screen name="alarm" />
+      <Stack.Screen name="grading" />
+      <Stack.Screen name="gtemplate" />
     </Stack>
   );
 }
