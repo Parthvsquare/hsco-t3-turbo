@@ -1,6 +1,7 @@
 import React from "react";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { Button } from "react-native-paper";
+import AntDesign from "@expo/vector-icons/AntDesign";
+
 interface CustomButtonProps {
   text: string;
   handlePress: () => void;

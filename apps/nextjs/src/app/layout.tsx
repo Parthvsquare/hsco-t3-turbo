@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { Layout } from "antd";
+// import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
@@ -10,11 +12,14 @@ import { TRPCReactProvider } from "~/trpc/react";
 
 import "~/app/globals.css";
 
-import { redirect } from "next/navigation";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 
-import { auth } from "@acme/auth";
+// import { redirect } from "next/navigation";
+
+// import { auth } from "@acme/auth";
 
 import { env } from "~/env";
+import LayoutComponent from "./_components/layout_component";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -55,10 +60,15 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TRPCReactProvider>{props.children}</TRPCReactProvider>
-          <div className="absolute bottom-4 right-4">
+          <TRPCReactProvider>
+            <AntdRegistry>
+              <LayoutComponent>{props.children}</LayoutComponent>
+            </AntdRegistry>
+            {props.children}
+          </TRPCReactProvider>
+          {/* <div className="absolute bottom-4 right-4">
             <ThemeToggle />
-          </div>
+          </div> */}
           <Toaster />
         </ThemeProvider>
       </body>

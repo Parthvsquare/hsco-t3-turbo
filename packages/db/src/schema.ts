@@ -291,6 +291,15 @@ export const GradeSystemTemplate = pgTable("gradeSystemTemplate", (t) => ({
     .references(() => User.id, { onDelete: "cascade" }),
 }));
 
+export const createGradeTemplate = createInsertSchema(GradeSystemTemplate, {
+  itemName: z.string().max(255),
+  gradeName: z.string().max(255),
+  gradeLowerLimit: z.number().multipleOf(0.0001),
+  gradeUpperLimit: z.number().multipleOf(0.0001),
+  createdBy: z.string(),
+  makePublic: z.boolean().optional().default(false),
+}).omit({ user: true, createdAt: true, updatedAt: true });
+
 export const GradeDatabase = pgTable("gradeDatabase", (t) => ({
   itemName: t.varchar({ length: 255 }),
   gradeId: t.serial().notNull().primaryKey(),
@@ -308,6 +317,14 @@ export const GradeDatabase = pgTable("gradeDatabase", (t) => ({
     .references(() => User.id, { onDelete: "cascade" }),
   // ReportDatabaseReportId: t.varchar({ length: 255 }),
 }));
+
+export const createGradeDatabase = createInsertSchema(GradeDatabase, {
+  itemName: z.string(),
+  gradeName: z.string(),
+  gradeLowerLimit: z.number().multipleOf(0.0001),
+  gradeUpperLimit: z.number().multipleOf(0.0001),
+  gradedItemWeight: z.number().multipleOf(0.0001),
+}).omit({ user: true, createdAt: true, updatedAt: true });
 
 export const AlertSystemTemplate = pgTable("alertSystemTemplate", (t) => ({
   alertTemplateId: t.serial().notNull().primaryKey(),
