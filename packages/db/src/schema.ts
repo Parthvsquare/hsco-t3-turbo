@@ -23,6 +23,14 @@ import { z } from "zod";
 // });
 export const Role = pgEnum("role", ["basic", "admin", "editor"]);
 
+export const RoleConst = {
+  basic: "basic",
+  admin: "admin",
+  editor: "editor",
+} as const;
+
+export type RoleEnum = (typeof RoleConst)[keyof typeof RoleConst];
+
 export const SubscribePlanEnum = pgEnum("subscribe_plan_enum", [
   "basic",
   "piece",
@@ -30,6 +38,17 @@ export const SubscribePlanEnum = pgEnum("subscribe_plan_enum", [
   "alert",
   "all",
 ]);
+
+export const SubscribePlanEnumConst = {
+  basic: "basic",
+  piece: "piece",
+  grading: "grading",
+  alert: "alert",
+  all: "all",
+} as const;
+
+export type SubscribePlanEnum =
+  (typeof SubscribePlanEnumConst)[keyof typeof SubscribePlanEnumConst];
 
 export const User = pgTable("user", (t) => ({
   id: t.uuid().notNull().primaryKey().defaultRandom(),
