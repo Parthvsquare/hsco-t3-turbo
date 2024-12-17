@@ -2,7 +2,6 @@
 
 import { createElement, useState } from "react";
 import { useRouter } from "next/navigation";
-// import { useRouter } from "next/navigation";
 import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
@@ -13,6 +12,9 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu, Space, theme, Typography } from "antd";
 
+// import { useRouter } from "next/navigation";
+// import { useSession } from "next-auth/react";
+
 const { Text } = Typography;
 
 const { Header, Sider, Content } = Layout;
@@ -20,6 +22,7 @@ const { Header, Sider, Content } = Layout;
 function LayoutComponent({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
+  // const { data: session, status } = useSession();
 
   const {
     token: { colorBgContainer },

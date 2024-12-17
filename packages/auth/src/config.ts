@@ -69,7 +69,7 @@ export const authConfig = {
       else if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
-    authorized: async ({ auth }) => {
+    authorized: ({ auth }) => {
       // Only allow access to admin users
       return auth?.user.role === "admin";
     },
