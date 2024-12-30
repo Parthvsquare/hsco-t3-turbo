@@ -12,6 +12,7 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Space, theme, Typography } from "antd";
+import { AuthShowcase } from "./auth-showcase";
 
 const { Text } = Typography;
 

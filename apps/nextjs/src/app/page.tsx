@@ -2,6 +2,7 @@
 // import { useRouter } from "next/navigation";
 
 import { HydrateClient } from "~/trpc/server";
+import { AuthShowcase } from "./_components/auth-showcase";
 
 // import {
 //   CreatePostForm,
@@ -27,7 +28,9 @@ export default function HomePage() {
 
   return (
     <HydrateClient>
-      <main className="container h-screen py-16"></main>
+      <main className="container h-screen py-16">
+        <AuthShowcase />
+      </main>
     </HydrateClient>
   );
 }

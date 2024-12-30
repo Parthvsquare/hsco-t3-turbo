@@ -14,8 +14,7 @@ declare module "@auth/core" {
     user: {
       id: string;
       // ...other properties
-      role: "basic" | "admin" | "editor";
-      subcriptionPlan: "basic" | "piece" | "grading" | "alert" | "all";
+      // role: Role;
       email: string;
     } & DefaultSession["user"];
   }
@@ -36,6 +35,10 @@ export default eventHandler(async (event) =>
     },
     redirectProxyUrl: process.env.AUTH_REDIRECT_PROXY_URL,
     providers: [
+      // Discord({
+      //   clientId: process.env.AUTH_DISCORD_ID,
+      //   clientSecret: process.env.AUTH_DISCORD_SECRET,
+      // }),
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -49,27 +52,14 @@ export default eventHandler(async (event) =>
       }),
     ],
     callbacks: {
-      session: ({ session, token }) => {
-        let role = "basic";
-        let subcriptionPlan = "basic";
-        const emails = process.env.ADMIN_USER?.split(",");
-        const isPresentInArray = emails?.includes(session.user.email);
-
-        if (isPresentInArray) {
-          role = "admin";
-          subcriptionPlan = "all";
-        }
-        return {
-          ...session,
-          user: {
-            ...session.user,
-            id: token.sub,
-            email: token.email,
-            role: role,
-            subcriptionPlan,
-          },
-        };
-      },
+      session: ({ session, token }) => ({
+        ...session,
+        user: {
+          ...session.user,
+          id: token.sub,
+          email: token.email,
+        },
+      }),
     },
   }),
 );
